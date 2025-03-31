@@ -25,12 +25,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y bc bison build-essential ccache curl flex git libncurses5-dev libssl-dev make rsync unzip zlib1g-dev gcc-aarch64-linux-gnu zip #added zip for packaging
 
-      - name: Get kernel version
-        id: kernel-version
-        run: |
-          KERNEL_VERSION=$(make kernelversion)
-          echo "KERNEL_VERSION=$KERNEL_VERSION" >> $GITHUB_OUTPUT
-          echo "::set-output name=kernel_version::$KERNEL_VERSION"
 
       - name: Download Toolchain
         run: |
