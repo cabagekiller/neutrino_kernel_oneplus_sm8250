@@ -29,7 +29,7 @@ jobs:
       - name: Download and Extract Clang Toolchain
         run: |
           # Replace with the actual URL of the best Clang prebuilt for aarch64.  **CRUCIAL:  Verify this URL!**
-          CLANG_URL="https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/main/clang-r547379.tar.gz"  # Example URL: **YOU MUST REPLACE THIS**
+          CLANG_URL="https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/master/clang-r547379.tar.gz"  # Example URL: **YOU MUST REPLACE THIS**
           CLANG_FILENAME="clang-r547379.tar.gz"
           CLANG_EXTRACT_DIR="clang-r547379"
 
@@ -41,32 +41,20 @@ jobs:
           tar -xf "$CLANG_FILENAME" -C "$CLANG_EXTRACT_DIR"
 
           # Set up environment variables (crucial!)
-          export CLANG_PATH=$(pwd)/$CLANG_EXTRACT_DIR/bin  # Path to Clang binaries
+          CLANG_PATH=$(pwd)/$CLANG_EXTRACT_DIR/bin  # Path to Clang binaries
           echo "CLANG_PATH=$CLANG_PATH" >> $GITHUB_ENV
           echo "TOOLCHAIN_PATH=$CLANG_PATH" >> $GITHUB_ENV #toolchain_path
-          echo "PATH=$CLANG_PATH:$PATH" >> $GITHUB_ENV   # Add Clang to PATH - Use this now to ensure it is defined in $PATH
           
-          # Update the build with the correct compiler command
-          echo "CC=clang" >> $GITHUB_ENV
-          echo "CXX=clang++" >> $GITHUB_ENV
-          
-          # Define cross compile values
-          export CROSS_COMPILE=aarch64-linux-gnu- #Cross Compile
-          export ARCH=arm64
-          echo "ARCH=arm64" >> $GITHUB_ENV
-          echo "CROSS_COMPILE=aarch64-linux-gnu-" >> $GITHUB_ENV
-          # **IMPORTANT**: Double check the path.
-          echo "::set-env name=PATH::$CLANG_PATH:$PATH"  # Update PATH in workflow
+          # Path to the environment file
+          echo "GITHUB_ENV=$GITHUB_ENV" #Check Value
+          ENV_FILE="$GITHUB_ENV"
 
-      - name: Set Environment Variables
-        run: |
-          # This step is largely redundant now, but can be kept for specific flags
-
-          # (Redundant, but kept for clarity, remove if not needed)
-          export ARCH=arm64
-          export CROSS_COMPILE=aarch64-linux-gnu-
-          echo "CC=clang" >> $GITHUB_ENV
-          echo "CXX=clang++" >> $GITHUB_ENV
+          # Write environment variables to the file
+          echo "CC=clang" >> "$ENV_FILE"
+          echo "CXX=clang++" >> "$ENV_FILE"
+          echo "PATH=$CLANG_PATH:$PATH" >> "$ENV_FILE" # Add Clang to PATH
+          echo "ARCH=arm64" >> "$ENV_FILE"
+          echo "CROSS_COMPILE=aarch64-linux-gnu-" >> "$ENV_FILE"
       - name: Create Build Directory
         run: mkdir -p ${{ env.BUILD_DIR }}
 
