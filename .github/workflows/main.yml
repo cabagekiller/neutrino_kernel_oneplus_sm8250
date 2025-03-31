@@ -1,6 +1,7 @@
 name: Build Android Kernel
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main  # Or your main branch name
