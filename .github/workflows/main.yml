@@ -20,12 +20,6 @@ jobs:
       BRANCH: ${{ github.ref_name }} # Get the branch name
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          repository: cabagekiller/neutrino_kernel_oneplus_sm8250
-          fetch-depth: 0  # Required for proper git describe
-
       - name: Set up environment
         run: |
           sudo apt-get update
@@ -49,6 +43,13 @@ jobs:
       - name: Create Build Directory
         run: mkdir -p ${{ env.BUILD_DIR }}
 
+      - name: Download Kernel Source
+        uses: actions/checkout@v3
+        with:
+          repository: cabagekiller/neutrino_kernel_oneplus_sm8250
+          path: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
+          fetch-depth: 0  # Required for proper git describe
+
       - name: Clone Required Repositories
         working-directory: ${{ env.BUILD_DIR }}
         run: |
@@ -58,7 +59,7 @@ jobs:
           git clone https://github.com/cabagekiller/kernel_patches.git
 
       - name: Setup KernelSU (Submodule Integration)
-        working-directory: ${{ env.BUILD_DIR }}
+        working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
         run: |
           set -euxo pipefail
           curl -LSs "https://raw.githubusercontent.com/rifsxd/KernelSU-Next/next/kernel/setup.sh" | bash -s next-susfs-dev
@@ -69,7 +70,7 @@ jobs:
           sed -i "s/DKSU_VERSION=11998/DKSU_VERSION=${KSU_VERSION}/" Makefile
 
       - name: Setup SUSFS
-        working-directory: ${{ env.BUILD_DIR }} #removed /kernel_platform as this is not needed, was just the git folder
+        working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
         run: |
           set -euxo pipefail
           SUSFS_PATCHES="${{ env.BUILD_DIR }}/susfs4ksu/kernel_patches"
@@ -92,7 +93,7 @@ jobs:
           git diff --quiet --exit-code || (git add -A && git commit -m "BUILD Kernel (SUSFS setup)" || true)
 
       - name: Configure Kernel Defconfig
-        working-directory: ${{ env.BUILD_DIR }}
+        working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
         run: |
           set -euxo pipefail
            # Add SUSFS configuration settings
@@ -124,14 +125,14 @@ jobs:
           echo "CONFIG_IP6_NF_MATCH_HL=y" >> ./arch/arm64/configs/neutrino_kebab_defconfig
 
       - name: Configure Kernel Defconfig
-        working-directory: ${{ env.BUILD_DIR }}
+        working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
         run: |
           export ARCH=arm64
           export CROSS_COMPILE=aarch64-linux-android-
           make neutrino_kebab_defconfig
 
       - name: Build Kernel
-        working-directory: ${{ env.BUILD_DIR }}
+        working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
         run: |
           export ARCH=arm64
           export CROSS_COMPILE=aarch64-linux-android-
