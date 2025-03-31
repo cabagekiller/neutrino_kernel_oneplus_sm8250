@@ -169,8 +169,3 @@ jobs:
              KSU Version: ${{ env.KSUVER }}  # Still *include* KSUVER in the body
              Timestamp: ${{ steps.timestamp.outputs.CURRENT_TIMESTAMP }} #Include timestamp output in release body.
 
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: kernel-oneplus9pro-${{ steps.kernel-version.outputs.kernel_version }}
-          path: artifacts/kernel-oneplus9pro-${{ steps.kernel-version.outputs.kernel_version }}.tar.gz
