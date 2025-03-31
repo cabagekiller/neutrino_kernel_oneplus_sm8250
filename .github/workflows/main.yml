@@ -152,7 +152,7 @@ jobs:
         run: |
           export CROSS_COMPILE=aarch64-linux-gnu- #Cross Compile
           export ARCH=arm64
-          make -j$(nproc) Image dtbo.img
+          make -j$(nproc)
 
       - name: Create ZIP Package
         working-directory: ${{ env.BUILD_DIR }}
