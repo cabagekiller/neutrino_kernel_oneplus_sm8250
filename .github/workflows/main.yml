@@ -91,6 +91,10 @@ jobs:
         working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
         run: |
           set -euxo pipefail
+          echo $TOOLCHAIN_PATH # check variable
+          which aarch64-linux-android-gcc # verify if toolchain is found
+          export ARCH=arm64
+          export CROSS_COMPILE=aarch64-linux-android-
            # Add SUSFS configuration settings
           echo "CONFIG_KSU=y" >> ./arch/arm64/configs/neutrino_kebab_defconfig #changed gki_defconfig to the current defconfig
           echo "CONFIG_KSU_SUSFS=y" >> ./arch/arm64/configs/neutrino_kebab_defconfig
