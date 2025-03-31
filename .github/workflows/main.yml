@@ -152,6 +152,15 @@ jobs:
           export ARCH=arm64
           make neutrino_kebab_defconfig
 
+      - name: Manually Export msm_audio.h Headers
+        working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
+        run: |
+          mkdir -p usr/include/linux
+          mkdir -p usr/techpack/audio/include/linux
+          find techpack/audio/include/uapi/linux/ -name "msm_audio*.h" -exec cp {} usr/include/linux/ \;
+          find techpack/audio/include/uapi/linux/ -name "msm_audio*.h" -exec cp {} usr/techpack/audio/include/linux/ \;
+
+
       - name: Prepare Kernel Headers and Tracing
         working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
         run: |
