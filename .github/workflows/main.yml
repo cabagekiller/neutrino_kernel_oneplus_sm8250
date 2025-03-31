@@ -26,14 +26,47 @@ jobs:
           sudo apt-get install -y bc bison build-essential ccache curl flex git libncurses5-dev libssl-dev make rsync unzip zlib1g-dev gcc-aarch64-linux-gnu zip #added zip for packaging
 
 
-      - name: Download Toolchain
+      - name: Download and Extract Clang Toolchain
         run: |
-          TOOLCHAIN_URL="https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9/+archive/refs/heads/master.tar.gz"  # Replace with your desired toolchain
-          TOOLCHAIN_DIR="$HOME/toolchain"
-          mkdir -p "$TOOLCHAIN_DIR"
-          curl -L "$TOOLCHAIN_URL" | tar -xz -C "$TOOLCHAIN_DIR"
-          echo "TOOLCHAIN_PATH=$TOOLCHAIN_DIR/aarch64-linux-android-4.9/bin" >> $GITHUB_ENV
+          # Replace with the actual URL of the best Clang prebuilt for aarch64.  **CRUCIAL:  Verify this URL!**
+          CLANG_URL="https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/master/clang-r487703l.tar.gz"  # Example URL: **YOU MUST REPLACE THIS**
+          CLANG_FILENAME="clang-r487703l.tar.gz"
+          CLANG_EXTRACT_DIR="clang-r487703l"
 
+          # Download the toolchain
+          wget "$CLANG_URL" -O "$CLANG_FILENAME"
+
+          # Create extraction directory and extract
+          mkdir "$CLANG_EXTRACT_DIR"
+          tar -xf "$CLANG_FILENAME" -C "$CLANG_EXTRACT_DIR"
+
+          # Set up environment variables (crucial!)
+          export CLANG_PATH=$(pwd)/$CLANG_EXTRACT_DIR/bin  # Path to Clang binaries
+          echo "CLANG_PATH=$CLANG_PATH" >> $GITHUB_ENV
+          echo "TOOLCHAIN_PATH=$CLANG_PATH" >> $GITHUB_ENV #toolchain_path
+          echo "PATH=$CLANG_PATH:$PATH" >> $GITHUB_ENV   # Add Clang to PATH - Use this now to ensure it is defined in $PATH
+          
+          # Update the build with the correct compiler command
+          echo "CC=clang" >> $GITHUB_ENV
+          echo "CXX=clang++" >> $GITHUB_ENV
+          
+          # Define cross compile values
+          export CROSS_COMPILE=aarch64-linux-gnu- #Cross Compile
+          export ARCH=arm64
+          echo "ARCH=arm64" >> $GITHUB_ENV
+          echo "CROSS_COMPILE=aarch64-linux-gnu-" >> $GITHUB_ENV
+          # **IMPORTANT**: Double check the path.
+          echo "::set-env name=PATH::$CLANG_PATH:$PATH"  # Update PATH in workflow
+
+      - name: Set Environment Variables
+        run: |
+          # This step is largely redundant now, but can be kept for specific flags
+
+          # (Redundant, but kept for clarity, remove if not needed)
+          export ARCH=arm64
+          export CROSS_COMPILE=aarch64-linux-gnu-
+          echo "CC=clang" >> $GITHUB_ENV
+          echo "CXX=clang++" >> $GITHUB_ENV
       - name: Create Build Directory
         run: mkdir -p ${{ env.BUILD_DIR }}
 
@@ -91,10 +124,6 @@ jobs:
         working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
         run: |
           set -euxo pipefail
-          echo $TOOLCHAIN_PATH # check variable
-          which aarch64-linux-android-gcc # verify if toolchain is found
-          export ARCH=arm64
-          export CROSS_COMPILE=aarch64-linux-android-
            # Add SUSFS configuration settings
           echo "CONFIG_KSU=y" >> ./arch/arm64/configs/neutrino_kebab_defconfig #changed gki_defconfig to the current defconfig
           echo "CONFIG_KSU_SUSFS=y" >> ./arch/arm64/configs/neutrino_kebab_defconfig
@@ -126,15 +155,15 @@ jobs:
       - name: Configure Kernel Defconfig
         working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
         run: |
+          export CROSS_COMPILE=aarch64-linux-gnu- #Cross Compile
           export ARCH=arm64
-          export CROSS_COMPILE=aarch64-linux-android-
           make neutrino_kebab_defconfig
 
       - name: Build Kernel
         working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
         run: |
+          export CROSS_COMPILE=aarch64-linux-gnu- #Cross Compile
           export ARCH=arm64
-          export CROSS_COMPILE=aarch64-linux-android-
           make -j$(nproc) Image dtbo.img
 
       - name: Create ZIP Package
