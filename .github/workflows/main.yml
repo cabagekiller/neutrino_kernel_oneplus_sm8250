@@ -152,6 +152,15 @@ jobs:
           export ARCH=arm64
           make neutrino_kebab_defconfig
 
+      - name: Prepare Kernel Headers and Tracing
+        working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
+        run: |
+          export CROSS_COMPILE=aarch64-linux-gnu-
+          export ARCH=arm64
+          make headers_check
+          make headers_install
+          make prepare
+
       - name: Build Kernel
         working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
         run: |
