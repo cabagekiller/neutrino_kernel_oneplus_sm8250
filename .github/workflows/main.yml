@@ -25,6 +25,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y bc bison build-essential ccache curl flex git libncurses5-dev libssl-dev make rsync unzip zlib1g-dev gcc-aarch64-linux-gnu zip #added zip for packaging
 
+      - name: Configure Git
+        run: |
+          git config --global user.name "GitHub Actions Build Bot"
+          git config --global user.email "actions@github.com" # Generic email is fine
+
 
       - name: Download and Extract Clang Toolchain
         run: |
