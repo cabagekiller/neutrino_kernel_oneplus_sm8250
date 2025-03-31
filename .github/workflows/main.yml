@@ -67,8 +67,9 @@ jobs:
         working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
         run: |
           set -euxo pipefail
-          SUSFS_PATCHES="${{ env.BUILD_DIR }}/susfs4ksu/kernel_patches"
-          KERNEL_PATCHES="${{ env.BUILD_DIR }}/kernel_patches"
+          ls -a
+          SUSFS_PATCHES="${GITHUB_WORKSPACE}/${{ env.BUILD_DIR }}/susfs4ksu/kernel_patches"
+          KERNEL_PATCHES="${GITHUB_WORKSPACE}/${{ env.BUILD_DIR }}/kernel_patches"
           KSU_NEXT="KernelSU-Next"
           mkdir -p ./fs ./include/linux
           cp "${SUSFS_PATCHES}/fs/"* ./fs/
