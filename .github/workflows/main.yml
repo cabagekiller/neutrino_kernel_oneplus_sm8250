@@ -29,9 +29,9 @@ jobs:
       - name: Download and Extract Clang Toolchain
         run: |
           # Replace with the actual URL of the best Clang prebuilt for aarch64.  **CRUCIAL:  Verify this URL!**
-          CLANG_URL="https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/master/clang-r487703l.tar.gz"  # Example URL: **YOU MUST REPLACE THIS**
-          CLANG_FILENAME="clang-r487703l.tar.gz"
-          CLANG_EXTRACT_DIR="clang-r487703l"
+          CLANG_URL="https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/main/clang-r547379.tar.gz"  # Example URL: **YOU MUST REPLACE THIS**
+          CLANG_FILENAME="clang-r547379.tar.gz"
+          CLANG_EXTRACT_DIR="clang-r547379"
 
           # Download the toolchain
           wget "$CLANG_URL" -O "$CLANG_FILENAME"
