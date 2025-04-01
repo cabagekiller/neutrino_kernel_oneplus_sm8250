@@ -135,12 +135,9 @@ jobs:
           echo "CONFIG_KSU_SUSFS_OPEN_REDIRECT=y" >> ./arch/arm64/configs/neutrino_kebab_defconfig
           echo "CONFIG_KSU_SUSFS_SUS_SU=n" >> ./arch/arm64/configs/neutrino_kebab_defconfig
           echo "CONFIG_KSU_WITH_KPROBES=n" >> ./arch/arm64/configs/neutrino_kebab_defconfig
-          echo "CONFIG_COMPAT=y" >> ./arch/arm64/configs/neutrino_kebab_defconfig
           # Add additional tmpfs config setting
           echo "CONFIG_TMPFS_XATTR=y" >> ./arch/arm64/configs/neutrino_kebab_defconfig
-          echo "CONFIG_TMPFS_POSIX_ACL=y" >> ./arch/arm64/configs/neutrino_kebab_defconfig
           # Add additional tmpfs config setting
-          echo "CONFIG_IP_NF_TARGET_TTL=y" >> ./arch/arm64/configs/neutrino_kebab_defconfig
           echo "CONFIG_IP6_NF_TARGET_HL=y" >> ./arch/arm64/configs/neutrino_kebab_defconfig
           echo "CONFIG_IP6_NF_MATCH_HL=y" >> ./arch/arm64/configs/neutrino_kebab_defconfig
 
