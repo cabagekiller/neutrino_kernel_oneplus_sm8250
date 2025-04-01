@@ -140,6 +140,16 @@ jobs:
           # Add additional tmpfs config setting
           echo "CONFIG_IP6_NF_TARGET_HL=y" >> ./arch/arm64/configs/neutrino_kebab_defconfig
           echo "CONFIG_IP6_NF_MATCH_HL=y" >> ./arch/arm64/configs/neutrino_kebab_defconfig
+          echo "CONFIG_LTO_NONE=y" >> ./arch/arm64/configs/neutrino_kebab_defconfig
+          echo "# CONFIG_LTO_CLANG is not set" >> ./arch/arm64/configs/neutrino_kebab_defconfig
+          echo "# CONFIG_POLLY_CLANG is not set" >> ./arch/arm64/configs/neutrino_kebab_defconfig
+          echo "# CONFIG_SHADOW_CALL_STACK is not set" >> ./arch/arm64/configs/neutrino_kebab_defconfig
+          echo "CONFIG_ARCH_MMAP_RND_BITS=18" >> ./arch/arm64/configs/neutrino_kebab_defconfig
+          echo "CONFIG_ARCH_MMAP_RND_COMPAT_BITS=11" >> ./arch/arm64/configs/neutrino_kebab_defconfig
+          echo "CONFIG_VMAP_STACK=y" >> ./arch/arm64/configs/neutrino_kebab_defconfig
+          echo "CONFIG_PANIC_ON_REFCOUNT_ERROR=y" >> ./arch/arm64/configs/neutrino_kebab_defconfig
+          echo "CONFIG_RELR=y" >> ./arch/arm64/configs/neutrino_kebab_defconfig
+
 
           sed -i '2s/check_defconfig//' ./build.config.gki
 
