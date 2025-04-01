@@ -146,11 +146,18 @@ jobs:
 
           sed -i '2s/check_defconfig//' ./build.config.gki
 
-      - name: Configure Kernel Defconfig
+      - name: Finalize Kernel Configuration
         working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
         run: |
           export ARCH=arm64
+          export CC=clang
+          export HOSTCC=clang
+          export LLVM=1
+          export LLVM_IAS=1
+          export CROSS_COMPILE=aarch64-linux-gnu-
           make neutrino_kebab_defconfig
+          make olddefconfig  # This ensures all config files are up to date
+
 
       - name: Manually Export msm_audio.h Headers
         working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
