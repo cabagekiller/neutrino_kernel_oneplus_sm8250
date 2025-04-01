@@ -167,14 +167,17 @@ jobs:
         working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
         run: |
           export PATH=${{ env.CLANG_PATH }}:$PATH  # Ensure Clang is in PATH
-          export CC=clang
-          export CXX=clang++
+          export CC="${{ env.CLANG_PATH }}/clang"
+          export CXX="${{ env.CLANG_PATH }}/clang++"
+          export HOSTCC="${{ env.CLANG_PATH }}/clang"
+          export HOSTCXX="${{ env.CLANG_PATH }}/clang++"
           export LLVM=1
           export LLVM_IAS=1
           export CROSS_COMPILE=aarch64-linux-gnu-
-          #make headers_check
-          #make headers_install
-          make prepare V=1 -j$(nproc)
+
+          make headers_install
+          make prepare V=1 CC=$CC HOSTCC=$HOSTCC -j$(nproc)
+      
 
       - name: Build Kernel
         working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
