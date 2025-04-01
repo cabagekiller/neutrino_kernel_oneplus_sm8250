@@ -161,7 +161,12 @@ jobs:
           mkdir -p usr/techpack/audio/include/linux
           find techpack/audio/include/uapi/linux/ -name "msm_audio*.h" -exec cp {} usr/include/linux/ \;
           find techpack/audio/include/uapi/linux/ -name "msm_audio*.h" -exec cp {} usr/techpack/audio/include/linux/ \;
-
+          
+      - name: Debug GCC Usage in Prepare Step
+        working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
+        run: |
+          grep -r "gcc" . > gcc_usage.txt || true
+          cat gcc_usage.txt
 
       - name: Prepare Kernel Headers and Tracing
         working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
@@ -195,7 +200,7 @@ jobs:
          clang --version
          which clang  # Debug: Check Clang location
          which gcc    # Debug: Check if GCC is accidentally being used
-      
+
          # Build Kernel
          make CC=clang HOSTCC=clang LLVM=1 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j$(nproc)g
 
