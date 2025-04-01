@@ -169,8 +169,6 @@ jobs:
           export PATH=${{ env.CLANG_PATH }}:$PATH  # Ensure Clang is in PATH
           export CC=clang
           export CXX=clang++
-          export HOSTCC=clang
-          export HOSTCXX=clang++
           export LLVM=1
           export LLVM_IAS=1
           export CROSS_COMPILE=aarch64-linux-gnu-
