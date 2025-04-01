@@ -165,7 +165,7 @@ jobs:
           export ARCH=arm64
           #make headers_check
           make headers_install
-          make prepare
+          make prepare V=1 -j$(nproc) CC=clang HOSTCC=clang LLVM=1 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-
 
       - name: Build Kernel
         working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
