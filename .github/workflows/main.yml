@@ -59,7 +59,6 @@ jobs:
           echo "CXX=clang++" >> "$ENV_FILE"
           echo "PATH=$CLANG_PATH:$PATH" >> "$ENV_FILE" # Add Clang to PATH
           echo "ARCH=arm64" >> "$ENV_FILE"
-          echo "CROSS_COMPILE=aarch64-linux-gnu-" >> "$ENV_FILE"
       - name: Create Build Directory
         run: mkdir -p ${{ env.BUILD_DIR }}
 
@@ -148,7 +147,6 @@ jobs:
       - name: Configure Kernel Defconfig
         working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
         run: |
-          export CROSS_COMPILE=aarch64-linux-gnu- #Cross Compile
           export ARCH=arm64
           make neutrino_kebab_defconfig
 
@@ -164,7 +162,6 @@ jobs:
       - name: Prepare Kernel Headers and Tracing
         working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
         run: |
-          export CROSS_COMPILE=aarch64-linux-gnu-
           export ARCH=arm64
           #make headers_check
           make headers_install
@@ -173,7 +170,7 @@ jobs:
       - name: Build Kernel
         working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
         run: |
-          make V=1 -j$(nproc) CC=clang LLVM=1 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-
+          make V=1 -j$(nproc) CC=clang LLVM=1 ARCH=arm64 LLVM_IAS=1
 
       - name: Create ZIP Package
         working-directory: ${{ env.BUILD_DIR }}
