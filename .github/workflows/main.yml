@@ -173,9 +173,7 @@ jobs:
       - name: Build Kernel
         working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
         run: |
-          export CROSS_COMPILE=aarch64-linux-gnu- #Cross Compile
-          export ARCH=arm64
-          make -j$(nproc)
+          make V=1 -j$(nproc) CC=clang LLVM=1 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-
 
       - name: Create ZIP Package
         working-directory: ${{ env.BUILD_DIR }}
