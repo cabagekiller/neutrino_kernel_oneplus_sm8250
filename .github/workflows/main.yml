@@ -173,7 +173,7 @@ jobs:
           export LLVM_IAS=1
           export CROSS_COMPILE=aarch64-linux-gnu-
           #make headers_check
-          make headers_install
+          #make headers_install
           make prepare V=1 -j$(nproc)
 
       - name: Build Kernel
