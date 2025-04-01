@@ -156,9 +156,11 @@ jobs:
       - name: Finalize Kernel Configuration
         working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
         run: |
+          make mrproper  # Ensure no stale config files cause conflicts
           make neutrino_kebab_defconfig
-           yes "" | make olddefconfig  # This ensures all config files are up to date
+          yes "" | make olddefconfig  # Auto-resolve missing options
           touch .config include/config/auto.conf include/generated/autoconf.h
+
 
 
       - name: Manually Export msm_audio.h Headers
