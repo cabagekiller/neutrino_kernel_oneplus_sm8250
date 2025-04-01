@@ -144,6 +144,8 @@ jobs:
           echo "CONFIG_IP6_NF_TARGET_HL=y" >> ./arch/arm64/configs/neutrino_kebab_defconfig
           echo "CONFIG_IP6_NF_MATCH_HL=y" >> ./arch/arm64/configs/neutrino_kebab_defconfig
 
+          sed -i '2s/check_defconfig//' ./build.config.gki
+
       - name: Configure Kernel Defconfig
         working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
         run: |
@@ -170,7 +172,7 @@ jobs:
       - name: Build Kernel
         working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
         run: |
-          make V=1 -j$(nproc) CC=clang LLVM=1 ARCH=arm64 LLVM_IAS=1
+          make V=1 -j$(nproc) CC=clang LLVM=1 ARCH=arm64 LLVM_IAS=1 CROSS_COMPILE=aarch64-linux-gnu- HOSTCC=clang
 
       - name: Create ZIP Package
         working-directory: ${{ env.BUILD_DIR }}
