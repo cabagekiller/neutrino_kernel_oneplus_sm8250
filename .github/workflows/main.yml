@@ -166,6 +166,14 @@ jobs:
       - name: Prepare Kernel Headers and Tracing
         working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
         run: |
+          export PATH=${{ env.CLANG_PATH }}:$PATH  # Ensure Clang is in PATH
+          export CC=clang
+          export CXX=clang++
+          export HOSTCC=clang
+          export HOSTCXX=clang++
+          export LLVM=1
+          export LLVM_IAS=1
+          export CROSS_COMPILE=aarch64-linux-gnu-
           #make headers_check
           make headers_install
           make prepare V=1 -j$(nproc)
@@ -173,7 +181,22 @@ jobs:
       - name: Build Kernel
         working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
         run: |
-          make V=1 -j$(nproc) CC=clang LLVM=1 ARCH=arm64 LLVM_IAS=1 CROSS_COMPILE=aarch64-linux-gnu- HOSTCC=clang
+         export PATH=${{ env.CLANG_PATH }}:$PATH  # Ensure Clang is in PATH
+         export CC=clang
+         export CXX=clang++
+         export HOSTCC=clang
+         export HOSTCXX=clang++
+         export LLVM=1
+         export LLVM_IAS=1
+         export CROSS_COMPILE=aarch64-linux-gnu-
+          
+         # Print Clang version to confirm it's being used
+         clang --version
+         which clang  # Debug: Check Clang location
+         which gcc    # Debug: Check if GCC is accidentally being used
+      
+         # Build Kernel
+         make CC=clang HOSTCC=clang LLVM=1 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j$(nproc)g
 
       - name: Create ZIP Package
         working-directory: ${{ env.BUILD_DIR }}
