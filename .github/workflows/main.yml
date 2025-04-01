@@ -180,8 +180,15 @@ jobs:
           export LLVM_IAS=1
           export CROSS_COMPILE=aarch64-linux-gnu-
 
+          # Debug: Check which compiler is used
+          echo "Using CC: $(which $CC)"
+          echo "Using HOSTCC: $(which $HOSTCC)"
+          $CC --version
+          $HOSTCC --version
+
           make headers_install
           make prepare V=1 CC=$CC HOSTCC=$HOSTCC -j$(nproc)
+
       
 
       - name: Build Kernel
