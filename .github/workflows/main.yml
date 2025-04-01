@@ -157,7 +157,7 @@ jobs:
         working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
         run: |
           make neutrino_kebab_defconfig
-          make olddefconfig  # This ensures all config files are up to date
+           yes "" | make olddefconfig  # This ensures all config files are up to date
           touch .config include/config/auto.conf include/generated/autoconf.h
 
 
