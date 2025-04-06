@@ -134,11 +134,12 @@ jobs:
           echo "CONFIG_PANIC_ON_REFCOUNT_ERROR=y" >> ./arch/arm64/configs/neutrino_kebab_defconfig
           echo "CONFIG_RELR=y" >> ./arch/arm64/configs/neutrino_kebab_defconfig
           sed -i '2s/check_defconfig//' ./build.config.gki
-      - name: Finalize Kernel Configuration
+      - name: Prepare Kernel with Clang
         working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
         run: |
           set -euxo pipefail
-          # Use Clang toolchain instead of GCC
+
+          # Set environment variables for Clang
           export CLANG_FLAGS="-target aarch64-linux-gnu"
           export HOSTCC=clang
           export CROSS_COMPILE=aarch64-linux-gnu-
@@ -153,14 +154,17 @@ jobs:
           export LD=ld.lld
           export AS=arm-linux-gnueabi-as
           export CROSS_COMPILE_COMPAT=arm-linux-gnueabi-
-          
+
           # Prepare the kernel configuration
           make mrproper ARCH=arm64
           make neutrino_kebab_defconfig ARCH=arm64
           make olddefconfig ARCH=arm64
           make savedefconfig ARCH=arm64
           cp defconfig arch/arm64/configs/neutrino_kebab_defconfig
-          make prepare LLVM=1 LLVM_IAS=1 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- export CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE_COMPAT=arm-linux-gnueabi-
+          
+          # Run 'make prepare' with Clang-specific environment variables
+          make prepare LLVM=1 LLVM_IAS=1 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_COMPAT=arm-linux-gnueabi-
+
 
 
 
