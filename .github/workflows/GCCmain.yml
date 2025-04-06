@@ -144,6 +144,8 @@ jobs:
           export CLANG_FLAGS="-target aarch64-linux-gnu"
           export CROSS_COMPILE=aarch64-linux-gnu-clang-
           export CLANG_ASFLAGS="-no-integrated-as"
+          export AS=clang
+          export LD=ld.lld
 
 
       
