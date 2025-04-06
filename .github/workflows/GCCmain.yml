@@ -23,12 +23,20 @@ jobs:
       - name: Set up environment
         run: |
           sudo apt-get update
-          sudo apt-get install -y bc bison build-essential ccache curl flex git libncurses5-dev libssl-dev make rsync unzip zlib1g-dev zip \
-              gcc-aarch64-linux-gnu gcc-arm-linux-gnueabi
+          sudo apt-get install -y bc bison build-essential ccache curl flex git libncurses5-dev libssl-dev make rsync unzip zlib1g-dev zip
+
       - name: Configure Git
         run: |
           git config --global user.name "GitHub Actions Build Bot"
           git config --global user.email "actions@github.com" # Generic email is fine
+
+      - name: Download AOSP Prebuilt Toolchain (Example for arm64)
+        run: |
+          mkdir -p toolchains
+          wget https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/+/refs/tags/android-10.0.0_r1/aarch64/aarch64-linux-android-4.9.tar.bz2 -O toolchains/aarch64-linux-android-4.9.tar.bz2
+          tar -xjf toolchains/aarch64-linux-android-4.9.tar.bz2 -C toolchains/
+          echo "export PATH=$(pwd)/toolchains/aarch64-linux-android-4.9/bin:$PATH" >> $GITHUB_ENV #Sets the path for the toolchain.
+          export PATH=$(pwd)/toolchains/aarch64-linux-android-4.9/bin:$PATH #Sets the path for the toolchain for the current step.
       
       - name: Create Build Directory
         run: mkdir -p ${{ env.BUILD_DIR }}
@@ -122,9 +130,6 @@ jobs:
         working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
         run: |
           set -euxo pipefail
-          # Remove the -mlittle-endian flag if it exists and use appropriate flags
-          export KBUILD_CFLAGS="-mcpu=cortex-a76 -mtune=cortex-a76"
-          export EXTRA_CFLAGS="-mcpu=cortex-a76 -mtune=cortex-a76"
           
           # Prepare the kernel configuration
           make mrproper CC=gcc HOSTCC=gcc
