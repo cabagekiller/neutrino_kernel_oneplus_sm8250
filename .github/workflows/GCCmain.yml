@@ -23,7 +23,7 @@ jobs:
       - name: Set up environment
         run: |
           sudo apt-get update
-          sudo apt-get install -y bc bison build-essential ccache curl flex git libncurses5-dev libssl-dev make rsync unzip zlib1g-dev zip gcc-10 g++-10
+          sudo apt-get install -y bc bison build-essential ccache curl flex git libncurses5-dev libssl-dev make rsync unzip zlib1g-dev zip gcc-10 g++-10 lld
 
       - name: Configure Git
         run: |
