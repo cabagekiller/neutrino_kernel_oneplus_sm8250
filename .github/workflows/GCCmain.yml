@@ -141,6 +141,9 @@ jobs:
           # Use Clang toolchain instead of GCC
           export CC=clang
           export HOSTCC=clang
+          export CLANG_FLAGS="-target aarch64-linux-gnu"
+          export CROSS_COMPILE=aarch64-linux-gnu-clang-
+
       
           # Prepare the kernel configuration
           make mrproper CC=clang HOSTCC=clang ARCH=arm64
