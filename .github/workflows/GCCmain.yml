@@ -144,6 +144,7 @@ jobs:
           export CROSS_COMPILE=aarch64-linux-gnu-
           export LLVM=1
           export LLVM_IAS=1
+          export CLANG_TRIPLE=aarch64-linux-gnu-
           
           # Prepare the kernel configuration
           make mrproper ARCH=arm64
@@ -151,7 +152,7 @@ jobs:
           make olddefconfig ARCH=arm64
           make savedefconfig ARCH=arm64
           cp defconfig arch/arm64/configs/neutrino_kebab_defconfig
-          make prepare ARCH=arm64
+          make prepare LLVM=1 LLVM_IAS=1 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- export CLANG_TRIPLE=aarch64-linux-gnu-
 
 
 
