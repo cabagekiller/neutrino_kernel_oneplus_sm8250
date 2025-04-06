@@ -152,7 +152,6 @@ jobs:
           export READELF=llvm-readelf
           export STRIP=llvm-strip
           export LD=ld.lld
-          export AS=arm-linux-gnueabi-as
           export CROSS_COMPILE_COMPAT=arm-linux-gnueabi-
 
           # Prepare the kernel configuration
