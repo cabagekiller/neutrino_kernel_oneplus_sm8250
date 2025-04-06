@@ -121,12 +121,19 @@ jobs:
       - name: Finalize Kernel Configuration
         working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
         run: |
+          set -euxo pipefail
+          # Remove the -mlittle-endian flag if it exists and use appropriate flags
+          export KBUILD_CFLAGS="-mcpu=cortex-a76 -mtune=cortex-a76"
+          export EXTRA_CFLAGS="-mcpu=cortex-a76 -mtune=cortex-a76"
+          
+          # Prepare the kernel configuration
           make mrproper CC=gcc HOSTCC=gcc
           make neutrino_kebab_defconfig CC=gcc HOSTCC=gcc
           make olddefconfig CC=gcc HOSTCC=gcc
           make savedefconfig CC=gcc HOSTCC=gcc
           cp defconfig arch/arm64/configs/neutrino_kebab_defconfig
           make prepare CC=gcc HOSTCC=gcc
+
       - name: Manually Export msm_audio.h Headers
         working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
         run: |
