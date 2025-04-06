@@ -23,21 +23,13 @@ jobs:
       - name: Set up environment
         run: |
           sudo apt-get update
-          sudo apt-get install -y bc bison build-essential ccache curl flex git libncurses5-dev libssl-dev make rsync unzip zlib1g-dev zip
+          sudo apt-get install -y bc bison build-essential ccache curl flex git libncurses5-dev libssl-dev make rsync unzip zlib1g-dev zip gcc-10 g++-10
 
       - name: Configure Git
         run: |
           git config --global user.name "GitHub Actions Build Bot"
           git config --global user.email "actions@github.com" # Generic email is fine
 
-      - name: Download and Extract GCC Toolchain
-        run: |
-          mkdir toolchains
-          wget https://github.com/mvaisakh/gcc-arm64/archive/gcc-master.zip -O toolchains/gcc-master.zip
-          unzip toolchains/gcc-master.zip -d toolchains/
-          # Assuming the binaries are in a 'bin' directory within the extracted archive
-          echo "export PATH=$(pwd)/toolchains/gcc-arm64-gcc-master/bin:$PATH" >> $GITHUB_ENV
-          export PATH=$(pwd)/toolchains/gcc-arm64-gcc-master/bin:$PATH
       
       - name: Create Build Directory
         run: mkdir -p ${{ env.BUILD_DIR }}
