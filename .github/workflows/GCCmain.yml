@@ -30,13 +30,15 @@ jobs:
           git config --global user.name "GitHub Actions Build Bot"
           git config --global user.email "actions@github.com" # Generic email is fine
 
-      - name: Download AOSP Prebuilt Toolchain (Example for arm64)
+      - name: Download Custom GCC Toolchain
         run: |
           mkdir -p toolchains
-          wget https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/+/refs/tags/android-10.0.0_r1/aarch64/aarch64-linux-android-4.9.tar.bz2 -O toolchains/aarch64-linux-android-4.9.tar.bz2
-          tar -xjf toolchains/aarch64-linux-android-4.9.tar.bz2 -C toolchains/
-          echo "export PATH=$(pwd)/toolchains/aarch64-linux-android-4.9/bin:$PATH" >> $GITHUB_ENV #Sets the path for the toolchain.
-          export PATH=$(pwd)/toolchains/aarch64-linux-android-4.9/bin:$PATH #Sets the path for the toolchain for the current step.
+          wget https://github.com/mvaisakh/gcc-build/releases/download/06042025/eva-gcc-arm64-06042025.xz -O toolchains/eva-gcc-arm64-06042025.xz
+          mkdir toolchains/gcc
+          xz -d toolchains/eva-gcc-arm64-06042025.xz
+          tar -xvf toolchains/eva-gcc-arm64-06042025.tar -C toolchains/gcc/
+          echo "export PATH=$(pwd)/toolchains/gcc/bin:$PATH" >> $GITHUB_ENV
+          export PATH=$(pwd)/toolchains/gcc/bin:$PATH
       
       - name: Create Build Directory
         run: mkdir -p ${{ env.BUILD_DIR }}
