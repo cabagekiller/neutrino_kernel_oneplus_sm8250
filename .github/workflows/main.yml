@@ -157,9 +157,9 @@ jobs:
         working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
         run: |
           make mrproper  # Ensure no stale config files cause conflicts
-          make neutrino_kebab_defconfig
-          yes "" | make olddefconfig  # Auto-resolve missing options
-          make savedefconfig
+          yes '' | make neutrino_kebab_defconfig
+          yes '' | make olddefconfig  # Auto-resolve missing options
+          yes '' | make savedefconfig
           cp defconfig arch/arm64/configs/neutrino_kebab_defconfig
           touch .config include/config/auto.conf include/generated/autoconf.h
 
