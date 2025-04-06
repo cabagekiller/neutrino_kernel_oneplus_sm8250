@@ -29,7 +29,22 @@ jobs:
         run: |
           git config --global user.name "GitHub Actions Build Bot"
           git config --global user.email "actions@github.com" # Generic email is fine
-
+          
+      - name: Set up GononClang Toolchain
+        run: |
+          # Download GononClang toolchain
+          wget https://github.com/Gonon-Kernel/gonon-clang/releases/download/16.0.6-20231104-release/GononClang-16.0.6-20231104.tar.xz
+          
+          # Extract the toolchain
+          tar -xvf GononClang-16.0.6-20231104.tar.xz
+          
+          # Set environment variables for the toolchain
+          export TOOLCHAIN_DIR=$(pwd)/GononClang-16.0.6-20231104
+          export PATH=$TOOLCHAIN_DIR/bin:$PATH
+          
+          # Verify the toolchain is available
+          clang --version
+          echo "Using GononClang toolchain from $TOOLCHAIN_DIR"
       
       - name: Create Build Directory
         run: mkdir -p ${{ env.BUILD_DIR }}
@@ -123,17 +138,17 @@ jobs:
         working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
         run: |
           set -euxo pipefail
-          # Use appropriate flags for ARM64 architecture
-          export KBUILD_CFLAGS="-march=armv8-a -mtune=cortex-a76"
-          export EXTRA_CFLAGS="-march=armv8-a -mtune=cortex-a76"
-          
+          # Use Clang toolchain instead of GCC
+          export CC=clang
+          export HOSTCC=clang
+      
           # Prepare the kernel configuration
-          make mrproper CC=gcc HOSTCC=gcc
-          make neutrino_kebab_defconfig CC=gcc HOSTCC=gcc
-          make olddefconfig CC=gcc HOSTCC=gcc
-          make savedefconfig CC=gcc HOSTCC=gcc
+          make mrproper CC=clang HOSTCC=clang
+          make neutrino_kebab_defconfig CC=clang HOSTCC=clang
+          make olddefconfig CC=clang HOSTCC=clang
+          make savedefconfig CC=clang HOSTCC=clang
           cp defconfig arch/arm64/configs/neutrino_kebab_defconfig
-          make prepare CC=gcc HOSTCC=gcc
+          make prepare CC=clang HOSTCC=clang
 
 
       - name: Manually Export msm_audio.h Headers
@@ -149,9 +164,20 @@ jobs:
       - name: Build Kernel with GCC
         working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
         run: |
-          echo "Using GCC:"
-          aarch64-linux-gnu-gcc --version
-          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j$(nproc)
+          # Build the kernel
+          make -j$(nproc) CC=clang HOSTCC=clang
+      
+          # Optionally, build kernel modules (if needed)
+          #make modules -j$(nproc) CC=clang HOSTCC=clang
+          
+          # Install the modules (optional)
+          #make modules_install CC=clang HOSTCC=clang
+          
+          # Install the kernel (optional, use with caution)
+          # make install CC=clang HOSTCC=clang
+          
+          # Output some build information
+          echo "Kernel build completed successfully"
       - name: Create ZIP Package
         working-directory: ${{ env.BUILD_DIR }}
         run: |
