@@ -23,7 +23,7 @@ jobs:
       - name: Set up environment
         run: |
           sudo apt-get update
-          sudo apt-get install -y bc bison build-essential ccache curl flex git libncurses5-dev libssl-dev make rsync unzip zlib1g-dev zip gcc-10 g++-10 lld
+          sudo apt-get install -y bc bison build-essential ccache curl flex git libncurses5-dev libssl-dev make rsync unzip zlib1g-dev zip gcc-10 g++-10 lld llvm
 
       - name: Configure Git
         run: |
@@ -139,12 +139,20 @@ jobs:
         run: |
           set -euxo pipefail
           # Use Clang toolchain instead of GCC
-          export HOSTCC=clang
           export CLANG_FLAGS="-target aarch64-linux-gnu"
+          export CC=clang
+          export HOSTCC=clang
           export CROSS_COMPILE=aarch64-linux-gnu-
-          export LLVM=1
-          export LLVM_IAS=1
           export CLANG_TRIPLE=aarch64-linux-gnu-
+          export LLVM=1
+          export AR=llvm-ar
+          export NM=llvm-nm
+          export OBJCOPY=llvm-objcopy
+          export OBJDUMP=llvm-objdump
+          export READELF=llvm-readelf
+          export STRIP=llvm-strip
+          export LD=ld.lld
+          export AS=clang
           
           # Prepare the kernel configuration
           make mrproper ARCH=arm64
