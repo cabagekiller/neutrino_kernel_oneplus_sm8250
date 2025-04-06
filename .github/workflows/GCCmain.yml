@@ -131,6 +131,9 @@ jobs:
         working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
         run: |
           set -euxo pipefail
+          # Use appropriate flags for ARM64 architecture
+          export KBUILD_CFLAGS="-march=armv8-a -mtune=cortex-a76"
+          export EXTRA_CFLAGS="-march=armv8-a -mtune=cortex-a76"
           
           # Prepare the kernel configuration
           make mrproper CC=gcc HOSTCC=gcc
@@ -139,6 +142,7 @@ jobs:
           make savedefconfig CC=gcc HOSTCC=gcc
           cp defconfig arch/arm64/configs/neutrino_kebab_defconfig
           make prepare CC=gcc HOSTCC=gcc
+
 
       - name: Manually Export msm_audio.h Headers
         working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
