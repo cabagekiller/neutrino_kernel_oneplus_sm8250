@@ -142,20 +142,20 @@ jobs:
           export CC=clang
           export HOSTCC=clang
           export CLANG_FLAGS="-target aarch64-linux-gnu"
-          export CROSS_COMPILE=aarch64-linux-gnu-clang-
+          export CROSS_COMPILE=aarch64-linux-gnu-
           export CLANG_ASFLAGS="-no-integrated-as"
           export AS=clang
           export LD=ld.lld
           export LLVM=1
-
-      
+          
           # Prepare the kernel configuration
-          make mrproper CC=clang HOSTCC=clang ARCH=arm64
-          make neutrino_kebab_defconfig CC=clang HOSTCC=clang ARCH=arm64
-          make olddefconfig CC=clang HOSTCC=clang ARCH=arm64
-          make savedefconfig CC=clang HOSTCC=clang ARCH=arm64
+          make mrproper ARCH=arm64
+          make neutrino_kebab_defconfig ARCH=arm64
+          make olddefconfig ARCH=arm64
+          make savedefconfig ARCH=arm64
           cp defconfig arch/arm64/configs/neutrino_kebab_defconfig
-          make prepare CC=clang HOSTCC=clang ARCH=arm64
+          make prepare ARCH=arm64
+
 
 
       - name: Manually Export msm_audio.h Headers
