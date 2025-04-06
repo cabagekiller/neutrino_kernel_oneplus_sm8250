@@ -155,18 +155,14 @@ jobs:
 
       - name: Finalize Kernel Configuration
         working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
-        env:
-          CC: clang
-          CXX: clang++
-          HOSTCC: clang
-          HOSTCXX: clang++
         run: |
-          make mrproper
-          make neutrino_kebab_defconfig
-          make olddefconfig
-          make savedefconfig
+          make mrproper CC=clang HOSTCC=clang
+          make neutrino_kebab_defconfig CC=clang HOSTCC=clang
+          make olddefconfig CC=clang HOSTCC=clang
+          make savedefconfig CC=clang HOSTCC=clang
           cp defconfig arch/arm64/configs/neutrino_kebab_defconfig
-          make prepare
+          make prepare CC=clang HOSTCC=clang
+
 
 
       - name: Manually Export msm_audio.h Headers
