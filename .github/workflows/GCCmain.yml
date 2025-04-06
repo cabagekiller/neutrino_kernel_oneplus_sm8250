@@ -139,16 +139,17 @@ jobs:
         run: |
           set -euxo pipefail
           # Use Clang toolchain instead of GCC
+          export CROSS_COMPILE=aarch64-linux-gnu-
           export CC=clang
           export HOSTCC=clang
       
           # Prepare the kernel configuration
-          make mrproper CC=clang HOSTCC=clang
-          make neutrino_kebab_defconfig CC=clang HOSTCC=clang
-          make olddefconfig CC=clang HOSTCC=clang
-          make savedefconfig CC=clang HOSTCC=clang
+          make mrproper CC=clang HOSTCC=clang ARCH=arm64
+          make neutrino_kebab_defconfig CC=clang HOSTCC=clang ARCH=arm64
+          make olddefconfig CC=clang HOSTCC=clang ARCH=arm64
+          make savedefconfig CC=clang HOSTCC=clang ARCH=arm64
           cp defconfig arch/arm64/configs/neutrino_kebab_defconfig
-          make prepare CC=clang HOSTCC=clang
+          make prepare CC=clang HOSTCC=clang ARCH=arm64
 
 
       - name: Manually Export msm_audio.h Headers
@@ -165,7 +166,7 @@ jobs:
         working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
         run: |
           # Build the kernel
-          make -j$(nproc) CC=clang HOSTCC=clang
+          make -j$(nproc) CC=clang HOSTCC=clang ARCH=arm64
       
           # Optionally, build kernel modules (if needed)
           #make modules -j$(nproc) CC=clang HOSTCC=clang
