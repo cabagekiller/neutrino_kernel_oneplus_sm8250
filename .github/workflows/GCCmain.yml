@@ -139,14 +139,11 @@ jobs:
         run: |
           set -euxo pipefail
           # Use Clang toolchain instead of GCC
-          export CC=clang
           export HOSTCC=clang
           export CLANG_FLAGS="-target aarch64-linux-gnu"
           export CROSS_COMPILE=aarch64-linux-gnu-
-          export CLANG_ASFLAGS="-no-integrated-as"
-          export AS=clang
-          export LD=ld.lld
           export LLVM=1
+          export LLVM_IAS=1
           
           # Prepare the kernel configuration
           make mrproper ARCH=arm64
