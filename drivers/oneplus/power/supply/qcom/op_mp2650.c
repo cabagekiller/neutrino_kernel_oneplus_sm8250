@@ -24,7 +24,7 @@
 #include <linux/power_supply.h>
 #include "linux/oem/project_info.h"
 
-#include <op_mp2650.h>
+#include "op_mp2650.h"
 #include <linux/oem/boot_mode.h>
 #include <linux/oem/power/oem_external_fg.h>
 
