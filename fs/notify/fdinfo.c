@@ -21,6 +21,15 @@
 
 #if defined(CONFIG_INOTIFY_USER) || defined(CONFIG_FANOTIFY)
 
+#ifndef ALL_INOTIFY_BITS
+#define ALL_INOTIFY_BITS    ((u32)0x00000fff)  // Adjust if needed
+#endif
+
+static u32 inotify_mark_user_mask(struct fsnotify_mark *mark)
+{
+    return mark->mask & ALL_INOTIFY_BITS;
+}
+
 static void show_fdinfo(struct seq_file *m, struct file *f,
 			void (*show)(struct seq_file *m,
 				     struct fsnotify_mark *mark))
