@@ -201,7 +201,7 @@ jobs:
           export LD=ld.lld
 
           # Make targets
-          make -j$(nproc) ARCH=arm64 O=out Image.gz-dtb
+          make -j$(nproc) ARCH=arm64 Image
 
       - name: Create ZIP Package
         working-directory: ${{ env.BUILD_DIR }}
