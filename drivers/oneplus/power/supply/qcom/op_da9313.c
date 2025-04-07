@@ -25,7 +25,7 @@
 #include <linux/rtc.h>
 #include <linux/proc_fs.h>
 
-#include <op_da9313.h>
+#include "op_da9313.h"
 
 static struct chip_da9313 *the_chip = NULL;
 static DEFINE_MUTEX(da9313_i2c_access);
