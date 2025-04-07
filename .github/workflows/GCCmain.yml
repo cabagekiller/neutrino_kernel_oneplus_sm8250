@@ -139,12 +139,14 @@ jobs:
         run: |
           set -euxo pipefail
 
-          # Set environment variables for Clang
+          # Set environment variables for Clang + LLVM IAS
           export CLANG_FLAGS="-target aarch64-linux-gnu"
           export HOSTCC=clang
           export CROSS_COMPILE=aarch64-linux-gnu-
           export CLANG_TRIPLE=aarch64-linux-gnu-
+          export CROSS_COMPILE_COMPAT=arm-linux-gnueabi-
           export LLVM=1
+          export LLVM_IAS=1
           export AR=llvm-ar
           export NM=llvm-nm
           export OBJCOPY=llvm-objcopy
@@ -152,17 +154,17 @@ jobs:
           export READELF=llvm-readelf
           export STRIP=llvm-strip
           export LD=ld.lld
-          export CROSS_COMPILE_COMPAT=arm-linux-gnueabi-
 
-          # Prepare the kernel configuration
+          # Prepare kernel config and sources
           make mrproper ARCH=arm64
-          make neutrino_kebab_defconfig ARCH=arm64
-          make olddefconfig ARCH=arm64
-          make savedefconfig ARCH=arm64
+          make ARCH=arm64 neutrino_kebab_defconfig
+          make ARCH=arm64 olddefconfig
+          make ARCH=arm64 savedefconfig
           cp defconfig arch/arm64/configs/neutrino_kebab_defconfig
-          
-          # Run 'make prepare' with Clang-specific environment variables
-          make prepare ARCH=arm64 LLVM=1 LLVM_IAS=1
+
+          # Fully prepare the kernel tree
+          make ARCH=arm64 prepare
+
 
 
 
