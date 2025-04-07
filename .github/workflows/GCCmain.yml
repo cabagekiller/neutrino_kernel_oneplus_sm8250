@@ -182,20 +182,27 @@ jobs:
       - name: Build Kernel with Clang
         working-directory: ${{ env.BUILD_DIR }}/${{ env.KERNEL_DIR }}
         run: |
-          # Build the kernel
-          make -j$(nproc) CC=clang HOSTCC=clang ARCH=arm64
-      
-          # Optionally, build kernel modules (if needed)
-          #make modules -j$(nproc) CC=clang HOSTCC=clang
-          
-          # Install the modules (optional)
-          #make modules_install CC=clang HOSTCC=clang
-          
-          # Install the kernel (optional, use with caution)
-          # make install CC=clang HOSTCC=clang
-          
-          # Output some build information
-          echo "Kernel build completed successfully"
+          set -euxo pipefail
+
+          # LLVM + Clang setup
+          export HOSTCC=clang
+          export CROSS_COMPILE=aarch64-linux-gnu-
+          export CLANG_TRIPLE=aarch64-linux-gnu-
+          export CROSS_COMPILE_COMPAT=arm-linux-gnueabi-
+          export LLVM=1
+          export LLVM_IAS=1
+
+          export AR=llvm-ar
+          export NM=llvm-nm
+          export OBJCOPY=llvm-objcopy
+          export OBJDUMP=llvm-objdump
+          export READELF=llvm-readelf
+          export STRIP=llvm-strip
+          export LD=ld.lld
+
+          # Make targets
+          make -j$(nproc) ARCH=arm64 O=out Image.gz-dtb
+
       - name: Create ZIP Package
         working-directory: ${{ env.BUILD_DIR }}
         run: |
