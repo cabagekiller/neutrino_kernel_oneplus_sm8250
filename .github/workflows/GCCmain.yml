@@ -221,16 +221,14 @@ jobs:
         run: echo "CURRENT_TIMESTAMP=$(date -u +'%Y.%m.%d-%H%M%S')" >> $GITHUB_ENV
 
       - name: Create Release
-        id: create_release
         uses: softprops/action-gh-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           files: ${{ env.BUILD_DIR }}/${{ env.zip_name }}
-          tag_name: release-${{ steps.timestamp.outputs.CURRENT_TIMESTAMP | replace(".", "-") }}  # Replace periods with dashes for valid tag
-          name: Release ${{ env.ROOT_DIR_PREFIX }} ${{ steps.timestamp.outputs.CURRENT_TIMESTAMP }}
+          tag_name: release-${{ github.sha }}  # Using the commit SHA as the tag name
+          name: Release ${{ github.sha }}  # Using the commit SHA for the release name
           body: |
             Release for ${{ env.ROOT_DIR_PREFIX }} based on branch ${{ env.BRANCH }}
-            KSU Version: ${{ env.KSUVER }}  # Still *include* KSUVER in the body
-            Timestamp: ${{ steps.timestamp.outputs.CURRENT_TIMESTAMP }} #Include timestamp output in release body.
-
+            KSU Version: ${{ env.KSUVER }}  # Include KSUVER in the body
+            Timestamp: ${{ steps.timestamp.outputs.CURRENT_TIMESTAMP }} # Include timestamp output in release body.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
