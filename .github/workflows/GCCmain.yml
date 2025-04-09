@@ -201,15 +201,15 @@ jobs:
           export LD=ld.lld
 
           # Make targets
-          make -j$(nproc) ARCH=arm64 Image
+          make -j$(nproc) ARCH=arm64 Image.gz-dtb
 
       - name: Create ZIP Package
         working-directory: ${{ env.BUILD_DIR }}
         run: |
           set -euxo pipefail
           mkdir -p AnyKernel3
-          touch AnyKernel3/Image
-          cp ${{ env.KERNEL_DIR }}/arch/arm64/boot/Image AnyKernel3/Image || { echo "Error copying Image file"; exit 1; } # Use correct path
+          touch AnyKernel3/Image.gz-dtb
+          cp ${{ env.KERNEL_DIR }}/arch/arm64/boot/Image.gz-dtb AnyKernel3/Image.gz-dtb || { echo "Error copying Image file"; exit 1; } # Use correct path
           cd AnyKernel3
           ZIP_NAME="${{ env.ROOT_DIR_PREFIX }}-${{ steps.timestamp.outputs.CURRENT_TIMESTAMP }}.zip" # use the timestamp var to build name
           echo "Creating zip file $ZIP_NAME..."
