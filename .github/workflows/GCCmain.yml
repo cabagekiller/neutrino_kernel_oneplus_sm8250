@@ -227,9 +227,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           files: ${{ env.BUILD_DIR }}/${{ env.zip_name }}
-          tag_name: release-${{ steps.timestamp.outputs.CURRENT_TIMESTAMP }} # Simple, safe tag - make tag name include timestamp output
-          name: Release ${{ env.ROOT_DIR_PREFIX }} ${{ steps.timestamp.outputs.CURRENT_TIMESTAMP }} #Include timestamp output in release name.
+          tag_name: release-${{ steps.timestamp.outputs.CURRENT_TIMESTAMP | replace(".", "-") }}  # Replace periods with dashes for valid tag
+          name: Release ${{ env.ROOT_DIR_PREFIX }} ${{ steps.timestamp.outputs.CURRENT_TIMESTAMP }}
           body: |
-             Release for ${{ env.ROOT_DIR_PREFIX }} based on branch ${{ env.BRANCH }}
-             KSU Version: ${{ env.KSUVER }}  # Still *include* KSUVER in the body
-             Timestamp: ${{ steps.timestamp.outputs.CURRENT_TIMESTAMP }} #Include timestamp output in release body.
+            Release for ${{ env.ROOT_DIR_PREFIX }} based on branch ${{ env.BRANCH }}
+            KSU Version: ${{ env.KSUVER }}  # Still *include* KSUVER in the body
+            Timestamp: ${{ steps.timestamp.outputs.CURRENT_TIMESTAMP }} #Include timestamp output in release body.
+
